@@ -26,11 +26,7 @@ const createTaskElement = function (taskText) {
   deleteIcon.src = './remove.svg';
   deleteButton.appendChild(deleteIcon);
 
-  listItem.appendChild(checkbox);
-  listItem.appendChild(label);
-  listItem.appendChild(editInput);
-  listItem.appendChild(editButton);
-  listItem.appendChild(deleteButton);
+  listItem.append(checkbox, label, editInput, editButton, deleteButton);
   return listItem;
 };
 
@@ -39,7 +35,7 @@ const addTask = function () {
   const listItem = createTaskElement(newTaskInput.value);
 
   incompleteTasksList.appendChild(listItem);
-  bindTaskEvents(listItem, taskCompleted);
+  bindTaskEvents(listItem, completedTask);
 
   newTaskInput.value = '';
 };
@@ -62,9 +58,7 @@ const editTask = function () {
 };
 
 const deleteTask = function () {
-  const listItem = this.parentNode;
-  const ul = listItem.parentNode;
-  ul.removeChild(listItem);
+  this.parentNode.remove();
 };
 
 const moveTask = function (listItem, targetList, onCheckboxChange) {
@@ -72,12 +66,12 @@ const moveTask = function (listItem, targetList, onCheckboxChange) {
   bindTaskEvents(listItem, onCheckboxChange);
 };
 
-const taskCompleted = function () {
-  moveTask(this.parentNode, completedTasksList, taskIncomplete);
+const completedTask = function () {
+  moveTask(this.parentNode, completedTasksList, incompleteTask);
 };
 
-const taskIncomplete = function () {
-  moveTask(this.parentNode, incompleteTasksList, taskCompleted);
+const incompleteTask = function () {
+  moveTask(this.parentNode, incompleteTasksList, completedTask);
 };
 
 addButton.addEventListener('click', addTask);
@@ -97,5 +91,5 @@ const bindTaskList = function (taskList, onCheckboxChange) {
   }
 };
 
-bindTaskList(incompleteTasksList, taskCompleted);
-bindTaskList(completedTasksList, taskIncomplete);
+bindTaskList(incompleteTasksList, completedTask);
+bindTaskList(completedTasksList, incompleteTask);
